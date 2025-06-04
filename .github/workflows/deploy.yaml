@@ -1,0 +1,33 @@
+name: Deploy Website
+
+on: 
+  push:
+    branches: 'main'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy: 
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+
+      - name: Setup Jekyll
+        run: bundle install
+
+      - name: Build Jekyll site
+        run: bundle exec jekyll build --baseurl "/" --destination ./_site
+
+      - name: Deploy to GitHub Pages
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./_site
+          
+      - name: Deploy GitHub Pages
+        uses: actions/deploy-pages@v1
